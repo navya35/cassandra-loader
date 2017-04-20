@@ -3,8 +3,8 @@
 
 ## Introduction
 
-cassandra-loader is a general-purpose, delimited-file, bulk loader for 
-Cassandra. It supports a number of configuration options to enable bulk 
+cassandra-loader is a general-purpose, delimited-file, bulk loader for
+Cassandra. It supports a number of configuration options to enable bulk
 loading of various types of delimited files, including
 * comma-separated values
 * tab-separated values
@@ -39,7 +39,7 @@ version 3.0.0).  The output will be the cassandra-loader executable
 in the build directory.  There will also be an jar with all of the
 dependencies included in the build/libs/cassandra-loader-uber-<version>.jar
 
-## Documentation 
+## Documentation
 
 To extract this README document, simply run (on the cassandra-loader
 executable - (e.g., on build/cassandra-loader):
@@ -50,7 +50,7 @@ jar xf cassandra-loader README.md
 
 ## Run
 
-To run cassandra-loader, simply run the cassandra-loader executable 
+To run cassandra-loader, simply run the cassandra-loader executable
 (e.g., located at build/cassandra-loader):
 
 ```
@@ -65,8 +65,8 @@ gradle run
 
 This will print the usage statement.
 
-The following will load the `myFileToLoad.csv` file into the Cassandra 
-cluster at IP address 1.2.3.4 into the `test.ltest` column family where 
+The following will load the `myFileToLoad.csv` file into the Cassandra
+cluster at IP address 1.2.3.4 into the `test.ltest` column family where
 the myFileToLoad file has the format of 4 columns - and it gets the
 data type information from the database - and using the default options:
 
@@ -78,7 +78,7 @@ cassandra-loader -f myFileToLoad.csv -host 1.2.3.4 -schema "test.ltest(a, b, c, 
 
  Switch           | Option             | Default                    | Description
 -----------------:|-------------------:|---------------------------:|:----------
- `-configFile`    | Filename           | none                       | Filename of configuration options 
+ `-configFile`    | Filename           | none                       | Filename of configuration options
  `-f`             | Filename           | &lt;REQUIRED&gt;                 | Filename to load - required.
  `-host`          | IP Address         | &lt;REQUIRED&gt;                 | Cassandra connection point - required.
  `-format`        | Input format       | delim                            | Format of the data.  Options are "delim" or "json".
@@ -103,6 +103,7 @@ cassandra-loader -f myFileToLoad.csv -host 1.2.3.4 -schema "test.ltest(a, b, c, 
  `-boolStyle`     | Boolean Style      | TRUE_FALSE                 | String for boolean values.  Options are "1_0", "Y_N", "T_F", "YES_NO", "TRUE_FALSE".
  `-decimalDelim`  | Decimal delimiter  | .                          | Delimiter for decimal values.  Options are "." or ","
  `-dateFormat`    | Date Format String | default for Locale.ENGLISH | Date format string as specified in the SimpleDateFormat Java class: http://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
+ `-colDateFormat` | Date Format String | &lt;not set&gt;            | Date format string as specified in the SimpleDateFormat Java class: http://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html applied on specified column colName,dateFormat
  `-skipRows`      | Rows to skip       | 0                          | Number of rows to skip at the beginning of the file
  `-skipCols`      | Columns to skip    | &lt;not set&gt;                  | Comma-separated list of columns to skip loading (0-counted)
  `-maxRows`       | Max rows to read   | -1                         | Maximum rows to read (after optional skipping of rows).  -1 signifies all rows.
@@ -128,7 +129,7 @@ That way, you could pipe data in from other commands:
 grep IMPORTANT data.csv | cassandra-loader -f stdin -h 1.2.3.4 -schema "test.itest(a, b)"
 ```
 
-### Support for collections 
+### Support for collections
 
 Collections are supported.  Their format is the CQL native one.
 Sets are started with '{' and ended with '}' and enclose a comma-separated list
@@ -152,11 +153,11 @@ different styles, the True and False strings are as follows:
 ```
     Style   | True | False
 ------------|------|-------
-     0_1    |    1 |     0 
-     Y_N    |    Y |     N 
-     T_F    |    T |     F 
-   YES_NO   |  YES |    NO 
- TRUE_FALSE | TRUE | FALSE 
+     0_1    |    1 |     0
+     Y_N    |    Y |     N
+     T_F    |    T |     F
+   YES_NO   |  YES |    NO
+ TRUE_FALSE | TRUE | FALSE
 ```
 
 ### Configuration file
@@ -173,8 +174,8 @@ the command line.  The format is one switch and option per line:
 
 ### Miscelaneous
 
-numFutures is a way to control the level of parallelism, but at some point 
-too many will actually slow down the load.  The default of 500 is a decent 
+numFutures is a way to control the level of parallelism, but at some point
+too many will actually slow down the load.  The default of 500 is a decent
 place to start.
 
 If you use quoted strings, you need to use double-quotes.  To escape a double-quote inside a quoted string, use the backslash to escape it ("\"").  To create a backslash inside a quoted string, use two backslashes in a row ("\\").  If you quote your string, it will not be trimmed, but if you do not quote your string it will be trimmed.
@@ -201,6 +202,7 @@ OPTIONS:
   -charsPerColumn <chars>            Max number of chars per column [4096]
   -dateFormat <dateFormatString>     Date format for TIMESTAMP [default for Locale.ENGLISH]
   -localDateFormat <formatString>    Date format for DATE [yyyy-MM-dd]
+  -colDateFormat <colFormatString>   Date format for TIMESTAMP [default for Locale.ENGLISH] for defined column (when using delim)
   -nullString <nullString>           String that signifies NULL [none]
   -comment <commentString>           Comment symbol to use [none]
   -skipRows <skipRows>               Number of rows to skip [0]
@@ -239,6 +241,7 @@ Examples:
 cassandra-loader -f /path/to/file.csv -host localhost -schema "test.test3(a, b, c)"
 cassandra-loader -f /path/to/directory -host 1.2.3.4 -schema "test.test3(a, b, c)" -delim "\t" -numThreads 10
 cassandra-loader -f stdin -host localhost -schema "test.test3(a, b, c)" -user myuser -pw mypassword
+cassandra-loader -f /path/to/directory -host localhost -schema "test.test3(a, b, c)" -user myuser -pw mypassword -configFile file.conf -colDateFormat "colName,yyyy-MM-dd'T'HH"
 ```
 
 ##Examples:
@@ -302,7 +305,7 @@ Both should return 891.
 cassandra-unloader is a utility to dump the contents
 of a Cassandra table to delimited file format.  It uses
 the same sorts of options as cassandra-loader so that the
-output of cassandra-unloader could be piped into 
+output of cassandra-unloader could be piped into
 cassandra-loader:
 
 ```
@@ -320,7 +323,7 @@ To build, run:
 gradle unloader
 ```
 
-To run cassandra-unloader, simply run the cassandra-unloader executable 
+To run cassandra-unloader, simply run the cassandra-unloader executable
 (e.g., located at build/cassandra-unloader):
 
 ```
