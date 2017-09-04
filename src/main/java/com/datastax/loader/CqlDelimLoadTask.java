@@ -29,6 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -106,6 +108,8 @@ class CqlDelimLoadTask implements Callable<Long> {
     private String keyspace = null;
     private String table = null;
     private JSONArray jsonArray;
+
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
     public CqlDelimLoadTask(String inCqlSchema, String inDelimiter,
                             int inCharsPerColumn,
@@ -187,9 +191,10 @@ class CqlDelimLoadTask implements Callable<Long> {
 
         // Prepare Badfile
         if (null != badDir) {
-            badParsePrinter = new PrintStream(new BufferedOutputStream(new FileOutputStream(badDir + "/" + readerName + BADPARSE)));
-            badInsertPrinter = new PrintStream(new BufferedOutputStream(new FileOutputStream(badDir + "/" + readerName + BADINSERT)));
-            logFname = badDir + "/" + readerName + LOG;
+            String now = LocalDateTime.now().format(dateTimeFormatter);
+            badParsePrinter = new PrintStream(new BufferedOutputStream(new FileOutputStream(badDir + "/" + readerName + "-" + now + BADPARSE)));
+            badInsertPrinter = new PrintStream(new BufferedOutputStream(new FileOutputStream(badDir + "/" + readerName + "-" + now + BADINSERT)));
+            logFname = badDir + "/" + readerName + "-" + now + LOG;
             logPrinter = new PrintStream(new BufferedOutputStream(new FileOutputStream(logFname)));
         }
 
